@@ -1,0 +1,24 @@
+name: Extract archive
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract tarball and commit files
+        run: |
+          tar -tzf best-flight-game-bot.tar.gz
+          tar -xzf best-flight-game-bot.tar.gz
+          rm best-flight-game-bot.tar.gz
+          if [ "$(ls -1 | wc -l)" -eq 1 ] && [ -d "$(ls -1)" ]; then d="$(ls -1)"; shopt -s dotglob; mv "$d"/* .; rmdir "$d"; fi
+          ls -R
+          git config user.name "zhongjunq"
+          git config user.email "zhongjunq@users.noreply.github.com"
+          rm -rf .github
+          git add -A
+          git status --short
+          git commit -m "Upload Canyon Courier game files"
+          git push
